@@ -1,9 +1,10 @@
 defmodule KV.RegistryTest do
   use ExUnit.Case, async: true
 
-  setup do
-    registry = start_supervised!(KV.Registry)
-    %{registry: registry}
+  setup context do
+    registryName = context.test
+    registry = start_supervised!({KV.Registry, name: registryName})
+    %{registry: registryName}
   end
 
   test "no buckets", %{registry: registry} do
