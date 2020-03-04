@@ -1,16 +1,16 @@
 defmodule KV.Registry do
   use GenServer
 
-  def start_link(_) do
-    GenServer.start_link(__MODULE__, :ok, [{:name, __MODULE__}])
+  def start_link(opts) do
+    GenServer.start_link(__MODULE__, :ok, opts)
   end
 
-  def search(name) do
-    GenServer.call(__MODULE__, {:search, name})
+  def search(registry, name) do
+    GenServer.call(registry, {:search, name})
   end
 
-  def create(name) do
-    GenServer.cast(__MODULE__, {:create, name})
+  def create(registry, name) do
+    GenServer.cast(registry, {:create, name})
   end
 
   @impl true
@@ -26,7 +26,7 @@ defmodule KV.Registry do
     if Map.has_key?(buckets, name) do
       {:noreply, {buckets, refs}}
     else
-      {:ok, bucket} = KV.Bucket.start_link
+      {:ok, bucket} = KV.Bucket.start_link([])
       buckets = Map.put(buckets, name, bucket)
       ref = Process.monitor(bucket)
       refs = Map.put(refs, ref, name)
