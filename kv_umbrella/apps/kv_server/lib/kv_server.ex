@@ -9,7 +9,9 @@ defmodule KVServer do
 
   def accept_on(server_socket) do
     {:ok, client_socket} = :gen_tcp.accept(server_socket)
-    serve client_socket
+    serve_function = fn -> serve client_socket end
+    {:ok, pid} = Task.Supervisor.start_child(KVServer.TaskSupervisor, serve_function)
+    :ok = :gen_tcp.controlling_process(client_socket, pid)
     accept_on server_socket
   end
 
@@ -22,8 +24,11 @@ defmodule KVServer do
   end
 
   defp read_line(socket) do
-    {:ok, data} = :gen_tcp.recv(socket, 0)
-    data
+    request = :gen_tcp.recv(socket, 0)
+    case request do
+      {:ok, "close\n"} -> raise "Forcing close"
+      {:ok, data} -> data
+    end
   end
 
   defp write_line(line, socket) do
