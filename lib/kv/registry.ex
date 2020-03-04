@@ -48,8 +48,5 @@ defmodule KV.Registry do
   end
 
   @impl true
-  def handle_info(msg, state) do
-    IO.inspect msg
-    {:noreply, state}
-  end
+  def handle_info(_msg, state), do: {:noreply, state}
 end
