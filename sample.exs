@@ -1,8 +1,5 @@
 alias KV.Bucket, as: Bucket
 alias KV.Registry, as: Registry
-alias KV.Supervisor, as: Supervisore
-
-Supervisore.start_link([])
 
 Registry.create("shopping")
 {:ok, bucket} = Registry.search("shopping")

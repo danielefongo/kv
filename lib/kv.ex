@@ -1,18 +1,9 @@
 defmodule KV do
-  @moduledoc """
-  Documentation for KV.
-  """
+  use Application
 
-  @doc """
-  Hello world.
-
-  ## Examples
-
-      iex> KV.hello()
-      :world
-
-  """
-  def hello do
-    :world
+  @impl true
+  def start(_type, args) do
+    IO.inspect args
+    KV.Supervisor.start_link([])
   end
 end
