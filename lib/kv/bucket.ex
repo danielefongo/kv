@@ -2,7 +2,7 @@ defmodule KV.Bucket do
   use Agent
 
   def start_link() do
-    Agent.start(fn -> %{} end)
+    Agent.start_link(fn -> %{} end)
   end
 
   def get(bucket, key) do

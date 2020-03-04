@@ -24,4 +24,12 @@ defmodule KV.RegistryTest do
     Agent.stop(bucket)
     assert KV.Registry.search("shopping") == :error
   end
+
+  test "removes bucket on crash" do
+    KV.Registry.create("shopping")
+    {:ok, bucket} = KV.Registry.search("shopping")
+
+    Agent.stop(bucket, :shutdown)
+    assert KV.Registry.search("shopping") == :error
+  end
 end
