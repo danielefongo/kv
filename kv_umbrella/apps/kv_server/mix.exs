@@ -23,7 +23,6 @@ defmodule KVServer.MixProject do
   end
 
   defp deps do
-    [
-    ]
+    [{:kv, in_umbrella: true}]
   end
 end
