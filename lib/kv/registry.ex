@@ -17,6 +17,11 @@ defmodule KV.Registry do
     GenServer.call(registry, {:create, name})
   end
 
+  def flushAllMessages(registry) do
+    GenServer.call(registry, :flush)
+    {:ok}
+  end
+
   @impl true
   def init(serverName) do
     refs = %{}
@@ -35,6 +40,11 @@ defmodule KV.Registry do
         :ets.insert(buckets, {name, bucketPid})
         {:reply, bucketPid, {buckets, refs}}
     end
+  end
+
+  @impl true
+  def handle_call(:flush, _from, _state) do
+    {:reply, "", ""}
   end
 
   @impl true

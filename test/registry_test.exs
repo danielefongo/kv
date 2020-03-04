@@ -22,7 +22,10 @@ defmodule KV.RegistryTest do
   test "removes buckets on exit", %{registry: registry} do
     KV.Registry.create(registry, "shopping")
     {:ok, bucket} = KV.Registry.search(registry, "shopping")
+
     Agent.stop(bucket)
+
+    KV.Registry.flushAllMessages(registry)
     assert KV.Registry.search(registry, "shopping") == :error
   end
 
@@ -31,6 +34,8 @@ defmodule KV.RegistryTest do
     {:ok, bucket} = KV.Registry.search(registry, "shopping")
 
     Agent.stop(bucket, :shutdown)
+
+    KV.Registry.flushAllMessages(registry)
     assert KV.Registry.search(registry, "shopping") == :error
   end
 end
