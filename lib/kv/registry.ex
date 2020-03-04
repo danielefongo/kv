@@ -1,22 +1,23 @@
 defmodule KV.Registry do
   use GenServer
 
-  def start_link(opts) do
-    GenServer.start_link(__MODULE__, :ok, opts)
+  def start_link(_) do
+    GenServer.start_link(__MODULE__, :ok, [{:name, __MODULE__}])
   end
 
-  def search(registry, name) do
-    GenServer.call(registry, {:search, name})
+  def search(name) do
+    GenServer.call(__MODULE__, {:search, name})
   end
 
-  def create(registry, name) do
-    GenServer.cast(registry, {:create, name})
+  def create(name) do
+    GenServer.cast(__MODULE__, {:create, name})
   end
 
   @impl true
   def init(:ok) do
     buckets = %{}
     refs = %{}
+    send self(), {:init, "Hello world!"}
     {:ok, {buckets, refs}}
   end
 
@@ -47,5 +48,8 @@ defmodule KV.Registry do
   end
 
   @impl true
-  def handle_info(_, state), do: {:noreply, state}
+  def handle_info(msg, state) do
+    IO.inspect msg
+    {:noreply, state}
+  end
 end
