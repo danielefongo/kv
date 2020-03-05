@@ -19,7 +19,7 @@ defmodule KVServer do
     message =
     with {:ok, data} <- read_line(client_socket),
       {:ok, command} <- KVServer.Command.parse(data),
-      do: KVServer.Command.run(command)
+      do: KVServer.Command.run(command, KV.Registry)
 
     write_line(client_socket, message)
     serve client_socket

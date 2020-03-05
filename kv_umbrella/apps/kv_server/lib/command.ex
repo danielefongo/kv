@@ -30,34 +30,34 @@ defmodule KVServer.Command do
     end
   end
 
-  def run({:create, bucket}) do
-    KV.Registry.create(KV.Registry, bucket)
+  def run({:create, bucket}, registry) do
+    KV.Registry.create(registry, bucket)
     {:ok, "OK\r\n"}
   end
 
-  def run({:get, bucket, key}) do
-    lookup(bucket, fn pid ->
+  def run({:get, bucket, key}, registry) do
+    lookup(bucket, registry, fn pid ->
       value = KV.Bucket.get(pid, key)
       {:ok, "#{value}\r\nOK\r\n"}
     end)
   end
 
-  def run({:put, bucket, key, value}) do
-    lookup(bucket, fn pid ->
+  def run({:put, bucket, key, value}, registry) do
+    lookup(bucket, registry, fn pid ->
       KV.Bucket.put(pid, key, value)
       {:ok, "OK\r\n"}
     end)
   end
 
-  def run({:delete, bucket, key}) do
-    lookup(bucket, fn pid ->
+  def run({:delete, bucket, key}, registry) do
+    lookup(bucket, registry, fn pid ->
       KV.Bucket.delete(pid, key)
       {:ok, "OK\r\n"}
     end)
   end
 
-  defp lookup(bucket, callback) do
-    case KV.Registry.search(KV.Registry, bucket) do
+  defp lookup(bucket, registry, callback) do
+    case KV.Registry.search(registry, bucket) do
       {:ok, pid} -> callback.(pid)
       :error -> {:error, :not_found}
     end
