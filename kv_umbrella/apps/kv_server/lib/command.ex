@@ -29,4 +29,8 @@ defmodule KVServer.Command do
       _ -> {:error, :unknown_command}
     end
   end
+
+  def run(command) do
+    {:ok, "OK\r\n"}
+  end
 end
