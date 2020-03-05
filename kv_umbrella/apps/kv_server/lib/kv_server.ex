@@ -16,14 +16,10 @@ defmodule KVServer do
   end
 
   def serve(client_socket) do
-    message = case read_line(client_socket) do
-      {:ok, data} ->
-        case KVServer.Command.parse(data) do
-          {:ok, command} -> KVServer.Command.run command
-          {:error, _} = err -> err
-        end
-      {:error, _} = err -> err
-    end
+    message =
+    with {:ok, data} <- read_line(client_socket),
+      {:ok, command} <- KVServer.Command.parse(data),
+      do: KVServer.Command.run(command)
 
     write_line(client_socket, message)
     serve client_socket
